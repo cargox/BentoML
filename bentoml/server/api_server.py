@@ -106,7 +106,7 @@ class BentoAPIServer:
         self.static_path = self.bento_service.get_web_static_content_path()
         self.ELASTIC_APM_TOKEN = b64decode(
             self.ELASTIC_APM_TOKEN).decode('utf-8')
-
+        print("APM OK")
         apm = ElasticAPM()
         apm.init_app(self.app,
                     server_url=self.ELASTIC_APM_URL,
