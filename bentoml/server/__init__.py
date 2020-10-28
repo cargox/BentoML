@@ -123,7 +123,9 @@ def start_prod_server(
                 saved_bundle_path, api_server_port, workers, timeout, prometheus_lock,
             )
         marshal_server.async_run()
+        logger.info("Executing with enable_microbatch...")
         gunicorn_app.run()
     else:
         gunicorn_app = GunicornBentoServer(saved_bundle_path, port, workers, timeout)
+        logger.info("Executing without enable_microbatch...")
         gunicorn_app.run()
