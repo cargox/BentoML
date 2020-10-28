@@ -89,7 +89,7 @@ def start_prod_server(
     microbatch_workers: int,
 ):
     logger.info("Starting BentoML API server in production mode..")
-
+    logger.info("Starting teste")
     import psutil
     import multiprocessing
 
