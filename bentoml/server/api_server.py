@@ -16,6 +16,8 @@ import logging
 import os
 import sys
 import uuid
+from base64 import b64decode
+from elasticapm.contrib.flask import ElasticAPM
 from functools import partial
 
 from flask import (
@@ -92,6 +94,8 @@ class BentoAPIServer:
 
     DEFAULT_PORT = config("apiserver").getint("default_port")
     _MARSHAL_FLAG = config("marshal_server").get("marshal_request_header_flag")
+    ELASTIC_APM_URL = os.getenv('ELASTIC_APM_URL')
+    ELASTIC_APM_TOKEN = os.getenv('ELASTIC_APM_TOKEN')
 
     def __init__(self, bento_service: BentoService, port=DEFAULT_PORT, app_name=None):
         app_name = bento_service.name if app_name is None else app_name
@@ -100,6 +104,16 @@ class BentoAPIServer:
         self.bento_service = bento_service
         self.app = Flask(app_name, static_folder=None)
         self.static_path = self.bento_service.get_web_static_content_path()
+        self.ELASTIC_APM_TOKEN = b64decode(
+            self.ELASTIC_APM_TOKEN).decode('utf-8')
+
+        apm = ElasticAPM()
+        apm.init_app(self.app,
+                    server_url=self.ELASTIC_APM_URL,
+                    service_name=app_name,
+                    secret_token=self.ELASTIC_APM_TOKEN,
+                    recording=True,
+                    verify_server_cert=False)
 
         self.swagger_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), 'swagger_static'
