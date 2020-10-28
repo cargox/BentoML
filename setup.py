@@ -28,6 +28,7 @@ install_requires = [
     "click>=7.0",
     "configparser",
     "docker",
+    "elastic-apm==5.9.0",
     "flask",
     "grpcio<=1.27.2",
     "gunicorn",
